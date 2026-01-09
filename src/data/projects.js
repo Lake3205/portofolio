@@ -91,5 +91,8 @@ export const projectsData = [
     headerImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&h=600&fit=crop",
     content: "Dit project omvat het ontwikkelen en trainen van een persoonlijke AI-assistent die in staat is om verschillende taken uit te voeren en vragen van gebruikers te beantwoorden.\n\nBelangrijke kenmerken:\n- Natuurlijke taalverwerking (NLP) voor het begrijpen van gebruikersinvoer\n- Machine learning modellen voor contextbewuste antwoorden\n- Integratie met externe API's voor aanvullende functionaliteit\n- Spraakherkenning en tekst-naar-spraak mogelijkheden\n- Gebruiksvriendelijke interface voor interactie met de assistent\n\nDe AI-assistent is ontworpen om gebruikers te helpen bij dagelijkse taken, informatie op te zoeken en een meer gepersonaliseerde ervaring te bieden"
   },
-
+  {
+    id: 14,
+    
+  }
 ]
