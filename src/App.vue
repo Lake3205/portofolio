@@ -1,28 +1,39 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>My Portfolio</h1>
+      <h1>Mijn Portfolio</h1>
       <nav class="nav">
         <button 
-          @click="currentView = 'home'" 
+          @click="navigateTo('home')" 
           :class="{ active: currentView === 'home' }"
           class="nav-button"
         >
           Home
         </button>
         <button 
-          @click="currentView = 'projects'" 
-          :class="{ active: currentView === 'projects' }"
+          @click="navigateTo('projects')" 
+          :class="{ active: currentView === 'projects' || currentView === 'project-detail' }"
           class="nav-button"
         >
-          Projects
+          Projecten
         </button>
       </nav>
     </header>
     
     <main>
-      <Home v-if="currentView === 'home'" />
-      <Projects v-else-if="currentView === 'projects'" />
+      <Home 
+        v-if="currentView === 'home'"
+        @view-project="viewProject"
+      />
+      <Projects 
+        v-else-if="currentView === 'projects'" 
+        @view-project="viewProject"
+      />
+      <ProjectDetail 
+        v-else-if="currentView === 'project-detail' && selectedProject"
+        :project="selectedProject"
+        @back="navigateTo('projects')"
+      />
     </main>
   </div>
 </template>
@@ -31,18 +42,36 @@
 import { ref } from 'vue'
 import Home from './components/Home.vue'
 import Projects from './components/Projects.vue'
+import ProjectDetail from './components/ProjectDetail.vue'
 
 export default {
   name: 'App',
   components: {
     Home,
-    Projects
+    Projects,
+    ProjectDetail
   },
   setup() {
     const currentView = ref('home')
+    const selectedProject = ref(null)
     
+    const navigateTo = (view) => {
+      currentView.value = view
+      if (view !== 'project-detail') {
+        selectedProject.value = null
+      }
+    }
+
+    const viewProject = (project) => {
+      selectedProject.value = project
+      currentView.value = 'project-detail'
+    }
+
     return {
-      currentView
+      currentView,
+      selectedProject,
+      navigateTo,
+      viewProject
     }
   }
 }
@@ -54,7 +83,7 @@ export default {
 }
 
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
   padding: 1.5rem 2rem;
   margin: -1rem -1rem 2rem -1rem;

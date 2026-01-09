@@ -5,33 +5,28 @@
       <div class="profile-banner"></div>
       <div class="profile-content">
         <div class="profile-photo">
-          <div class="photo-placeholder">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
+          <img src="https://media.licdn.com/dms/image/v2/D4E03AQEvmrCQvyFoYA/profile-displayphoto-scale_200_200/B4EZsEh8mcHgAc-/0/1765307567973?e=2147483647&v=beta&t=Nebf5sZdK9DaQXBdDuFPj2wvTRnVXMR5MPQ4AEYCpUQ" alt="Senna Garrelts" class="profile-image" />
         </div>
         <div class="profile-info">
-          <h1 class="profile-name">Your Name</h1>
-          <p class="profile-headline">Full Stack Developer | Web Designer | Problem Solver</p>
-          <p class="profile-location">📍 Your Location</p>
+          <h1 class="profile-name">Senna Garrelts</h1>
+          <p class="profile-headline">Full Stack Developer | Creative technologist</p>
+          <p class="profile-location">Arnhem</p>
         </div>
       </div>
     </div>
 
     <!-- About Section -->
     <div class="section-card">
-      <h2 class="section-title">About</h2>
+      <h2 class="section-title">Over Mij</h2>
       <p class="about-text">
-        Passionate developer with experience in building web applications using modern technologies. 
-        Skilled in both frontend and backend development with a focus on creating user-friendly and 
-        efficient solutions. Always eager to learn new technologies and tackle challenging problems.
+          Een gepossioneerde full-stack developer met een passie voor het creëren van dynamische en gebruiksvriendelijke webapplicaties.
+          Met ervaring in zowel front-end als back-end technologieën, streef ik ernaar om innovatieve oplossingen te leveren die voldoen aan de behoeften van gebruikers en bedrijven.
       </p>
     </div>
 
     <!-- Skills Section -->
     <div class="section-card">
-      <h2 class="section-title">Skills</h2>
+      <h2 class="section-title">Vaardigheden</h2>
       <div class="skills-grid">
         <div class="skill-badge" v-for="skill in skills" :key="skill">
           {{ skill }}
@@ -43,26 +38,27 @@
     <div class="stats-container">
       <div class="stat-card">
         <div class="stat-number">{{ projectStats.personal }}</div>
-        <div class="stat-label">Personal Projects</div>
+        <div class="stat-label">Persoonlijke Projecten</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{{ projectStats.school }}</div>
-        <div class="stat-label">School Projects</div>
+        <div class="stat-label">School Projecten</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">{{ projectStats.work }}</div>
-        <div class="stat-label">Work Projects</div>
+        <div class="stat-number">{{ projectStats.future }}</div>
+        <div class="stat-label">Toekomstplannen</div>
       </div>
     </div>
 
     <!-- Recent Activity -->
     <div class="section-card">
-      <h2 class="section-title">Recent Projects</h2>
+      <h2 class="section-title">Recente Projecten</h2>
       <div class="recent-projects">
         <div 
           v-for="project in recentProjects" 
           :key="project.id"
           class="recent-project-item"
+          @click="viewProject(project)"
         >
           <div class="project-icon">📁</div>
           <div class="project-details">
@@ -86,7 +82,8 @@ import { projectsData } from '../data/projects.js'
 
 export default {
   name: 'Home',
-  setup() {
+  emits: ['view-project'],
+  setup(props, { emit }) {
     const skills = [
       'PHP', 'JavaScript', 'Vue.js', 'React', 'Node.js', 
       'MySQL', 'MongoDB', 'HTML5', 'CSS3', 'REST API',
@@ -97,7 +94,7 @@ export default {
       return {
         personal: projectsData.filter(p => p.category === 'personal').length,
         school: projectsData.filter(p => p.category === 'school').length,
-        work: projectsData.filter(p => p.category === 'work').length
+        future: projectsData.filter(p => p.category === 'future').length
       }
     })
 
@@ -105,10 +102,15 @@ export default {
       return projectsData.slice(0, 4)
     })
 
+    const viewProject = (project) => {
+      emit('view-project', project)
+    }
+
     return {
       skills,
       projectStats,
-      recentProjects
+      recentProjects,
+      viewProject
     }
   }
 }
@@ -121,7 +123,7 @@ export default {
 }
 
 .profile-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -130,7 +132,7 @@ export default {
 
 .profile-banner {
   height: 120px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
 }
 
 .profile-content {
@@ -142,72 +144,64 @@ export default {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: white;
-  border: 4px solid white;
+  background: var(--card-bg);
+  border: 4px solid var(--card-bg);
   position: absolute;
   top: -60px;
   left: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.photo-placeholder {
+.profile-image {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.photo-placeholder svg {
-  width: 60px;
-  height: 60px;
 }
 
 .profile-info {
-  margin-top: 70px;
-  color: #000;
+  padding-top: 80px;
+  color: var(--text-primary);
 }
 
 .profile-name {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .profile-headline {
   font-size: 1.1rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .profile-location {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.95rem;
 }
 
 .section-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .section-title {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .about-text {
   line-height: 1.6;
-  color: #333;
+  color: var(--text-secondary);
 }
 
 .skills-grid {
@@ -217,7 +211,7 @@ export default {
 }
 
 .skill-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -233,7 +227,7 @@ export default {
 }
 
 .stat-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -243,15 +237,12 @@ export default {
 .stat-number {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #3b82f6;
   margin-bottom: 0.5rem;
 }
 
 .stat-label {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.95rem;
 }
 
@@ -265,13 +256,14 @@ export default {
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--item-bg);
   border-radius: 8px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .recent-project-item:hover {
-  background: #e9ecef;
+  background: var(--item-hover-bg);
   transform: translateX(5px);
 }
 
@@ -288,11 +280,11 @@ export default {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .project-category {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   text-transform: capitalize;
   margin-bottom: 0.5rem;
@@ -305,7 +297,7 @@ export default {
 }
 
 .tag {
-  background: #667eea;
+  background: #3b82f6;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;

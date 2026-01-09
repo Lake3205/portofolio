@@ -4,8 +4,17 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  
+  /* Dark mode colors (default) */
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --card-bg: #1e1e1e;
+  --item-bg: #2a2a2a;
+  --item-hover-bg: #333333;
+  --bg-color: #242424;
+  
+  color: var(--text-primary);
+  background-color: var(--bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -33,7 +42,15 @@ body {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #f3f2ef;
+    /* Light mode colors */
+    --text-primary: #213547;
+    --text-secondary: #666;
+    --card-bg: #ffffff;
+    --item-bg: #f8f9fa;
+    --item-hover-bg: #e9ecef;
+    --bg-color: #f3f2ef;
+    
+    color: var(--text-primary);
+    background-color: var(--bg-color);
   }
 }

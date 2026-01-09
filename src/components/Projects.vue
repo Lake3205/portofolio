@@ -1,6 +1,6 @@
 <template>
   <div class="projects">
-    <h1 class="page-title">My Projects</h1>
+    <h1 class="page-title">Mijn Projecten</h1>
     
     <!-- Category Filter -->
     <div class="filters-section">
@@ -29,18 +29,18 @@
             School ({{ getCategoryCount('school') }})
           </button>
           <button 
-            @click="selectedCategory = 'work'" 
-            :class="{ active: selectedCategory === 'work' }"
-            class="filter-button category-work"
+            @click="selectedCategory = 'future'" 
+            :class="{ active: selectedCategory === 'future' }"
+            class="filter-button category-future"
           >
-            Work ({{ getCategoryCount('work') }})
+            Toekomstplannen ({{ getCategoryCount('future') }})
           </button>
         </div>
       </div>
 
       <!-- Skills/Tags Filter -->
       <div class="filter-group">
-        <h3 class="filter-title">Skills</h3>
+        <h3 class="filter-title">Vaardigheden</h3>
         <div class="tags-buttons">
           <button 
             v-for="tag in allTags" 
@@ -68,8 +68,13 @@
         class="project-card"
         @click="openProject(project)"
       >
-        <div class="project-category-badge" :class="`badge-${project.category}`">
-          {{ project.category }}
+        <div class="project-header-badges">
+          <div class="project-category-badge" :class="`badge-${project.category}`">
+            {{ project.category }}
+          </div>
+          <div v-if="project.status === 'in-progress'" class="status-badge">
+            🔨 In Progress
+          </div>
         </div>
         <h3 class="project-title">{{ project.title }}</h3>
         <p class="project-description">{{ project.description }}</p>
@@ -78,7 +83,7 @@
             {{ tag }}
           </span>
         </div>
-        <button class="view-button">View Details →</button>
+        <button class="view-button">Bekijk Project →</button>
       </div>
     </div>
 
@@ -86,37 +91,6 @@
     <div v-if="filteredProjects.length === 0" class="no-results">
       <p>No projects found matching your filters.</p>
       <button @click="clearFilters" class="clear-button">Clear Filters</button>
-    </div>
-
-    <!-- Project Detail Modal -->
-    <div v-if="selectedProject" class="modal-overlay" @click="closeProject">
-      <div class="modal-content" @click.stop>
-        <button class="close-button" @click="closeProject">×</button>
-        <div class="modal-header">
-          <div class="modal-category-badge" :class="`badge-${selectedProject.category}`">
-            {{ selectedProject.category }}
-          </div>
-          <h2 class="modal-title">{{ selectedProject.title }}</h2>
-        </div>
-        <div class="modal-body">
-          <div class="modal-section">
-            <h3>Description</h3>
-            <p>{{ selectedProject.description }}</p>
-          </div>
-          <div class="modal-section">
-            <h3>Details</h3>
-            <p>{{ selectedProject.details }}</p>
-          </div>
-          <div class="modal-section">
-            <h3>Technologies Used</h3>
-            <div class="modal-tags">
-              <span v-for="tag in selectedProject.tags" :key="tag" class="tag">
-                {{ tag }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -127,10 +101,10 @@ import { projectsData } from '../data/projects.js'
 
 export default {
   name: 'Projects',
-  setup() {
+  emits: ['view-project'],
+  setup(props, { emit }) {
     const selectedCategory = ref('all')
     const selectedTags = ref([])
-    const selectedProject = ref(null)
 
     // Get all unique tags from projects
     const allTags = computed(() => {
@@ -183,26 +157,20 @@ export default {
     }
 
     const openProject = (project) => {
-      selectedProject.value = project
-    }
-
-    const closeProject = () => {
-      selectedProject.value = null
+      emit('view-project', project)
     }
 
     return {
       projectsData,
       selectedCategory,
       selectedTags,
-      selectedProject,
       allTags,
       filteredProjects,
       getCategoryCount,
       getTagCount,
       toggleTag,
       clearFilters,
-      openProject,
-      closeProject
+      openProject
     }
   }
 }
@@ -218,11 +186,11 @@ export default {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .filters-section {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -241,7 +209,7 @@ export default {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .category-buttons {
@@ -251,9 +219,9 @@ export default {
 }
 
 .filter-button {
-  background: #f8f9fa;
-  border: 2px solid #e9ecef;
-  color: #495057;
+  background: var(--item-bg);
+  border: 2px solid var(--item-hover-bg);
+  color: var(--text-primary);
   padding: 0.5rem 1.25rem;
   border-radius: 8px;
   cursor: pointer;
@@ -263,29 +231,29 @@ export default {
 }
 
 .filter-button:hover {
-  background: #e9ecef;
-  border-color: #dee2e6;
+  background: var(--item-hover-bg);
+  border-color: var(--item-hover-bg);
 }
 
 .filter-button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
-  border-color: #667eea;
+  border-color: #3b82f6;
 }
 
 .category-personal.active {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  border-color: #f093fb;
+  background: #ec4899;
+  border-color: #ec4899;
 }
 
 .category-school.active {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  border-color: #4facfe;
+  background: #06b6d4;
+  border-color: #06b6d4;
 }
 
-.category-work.active {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  border-color: #43e97b;
+.category-future.active {
+  background: #8b5cf6;
+  border-color: #8b5cf6;
 }
 
 .tags-buttons {
@@ -295,9 +263,9 @@ export default {
 }
 
 .tag-button {
-  background: white;
-  border: 2px solid #dee2e6;
-  color: #495057;
+  background: var(--card-bg);
+  border: 2px solid var(--item-hover-bg);
+  color: var(--text-primary);
   padding: 0.4rem 1rem;
   border-radius: 20px;
   cursor: pointer;
@@ -312,13 +280,13 @@ export default {
 }
 
 .tag-button.active {
-  background: #667eea;
+  background: #3b82f6;
   color: white;
-  border-color: #667eea;
+  border-color: #3b82f6;
 }
 
 .results-count {
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 1rem;
   font-size: 0.95rem;
 }
@@ -331,7 +299,7 @@ export default {
 }
 
 .project-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -346,6 +314,13 @@ export default {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
+.project-header-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
 .project-category-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -353,31 +328,40 @@ export default {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  color: white;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #10b981;
   color: white;
 }
 
 .badge-personal {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: #ec4899;
 }
 
 .badge-school {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #06b6d4;
 }
 
-.badge-work {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+.badge-future {
+  background: #8b5cf6;
 }
 
 .project-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #000;
+  color: var(--text-primary);
 }
 
 .project-description {
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 1rem;
   font-size: 0.95rem;
@@ -391,8 +375,8 @@ export default {
 }
 
 .tag {
-  background: #e9ecef;
-  color: #495057;
+  background: var(--item-bg);
+  color: var(--text-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -400,7 +384,7 @@ export default {
 }
 
 .view-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -419,19 +403,19 @@ export default {
 .no-results {
   text-align: center;
   padding: 3rem;
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .no-results p {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin-bottom: 1rem;
 }
 
 .clear-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -446,115 +430,6 @@ export default {
   opacity: 0.9;
 }
 
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 16px;
-  max-width: 700px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: #e9ecef;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  color: #495057;
-  z-index: 10;
-}
-
-.close-button:hover {
-  background: #dee2e6;
-  transform: scale(1.1);
-}
-
-.modal-header {
-  padding: 2rem 2rem 1rem 2rem;
-}
-
-.modal-category-badge {
-  display: inline-block;
-  padding: 0.4rem 1rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  color: white;
-}
-
-.modal-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 1rem;
-}
-
-.modal-body {
-  padding: 0 2rem 2rem 2rem;
-}
-
-.modal-section {
-  margin-bottom: 1.5rem;
-}
-
-.modal-section:last-child {
-  margin-bottom: 0;
-}
-
-.modal-section h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: #000;
-}
-
-.modal-section p {
-  color: #495057;
-  line-height: 1.6;
-}
-
-.modal-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.modal-tags .tag {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-}
-
 @media (max-width: 768px) {
   .category-buttons {
     flex-direction: column;
@@ -566,15 +441,6 @@ export default {
   
   .projects-grid {
     grid-template-columns: 1fr;
-  }
-
-  .modal-content {
-    max-height: 95vh;
-  }
-
-  .modal-header,
-  .modal-body {
-    padding: 1.5rem;
   }
 }
 </style>
